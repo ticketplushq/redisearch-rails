@@ -23,7 +23,7 @@ module RediSearch
       def redisearch(query, **options)
         result = redisearch_index.search(query, options.deep_merge(nocontent: true))
         result.shift # remove the first element (count)
-        self.find_by(id: result)
+        self.find(result)
       end
 
       # Reindex all
