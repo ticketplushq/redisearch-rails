@@ -1,8 +1,8 @@
-#Redisearch-rails
+# Redisearch-rails
 
 Adds support for easily indexing and search ActiveRecord models using RediSearch module http://redisearch.io/
 
-#Getting started
+# Getting started
 
 First you need a Redisearch Service running, please follow [Quick Start](https://oss.redislabs.com/redisearch/Quick_Start.html) documentation.
 
