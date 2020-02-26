@@ -62,7 +62,7 @@ irb(main):004:0> User.redisearch('@first_name:(Jon|Jane) @last_name:"Doe"')
 ```
 
 
-##Indexing
+## Indexing
 Each Model with defined `redisearch` is a **Redisearch Index** representation, and an instantiated Object its a **Redisearch Document** where the ID attribute of the instance is the ID of the Document.
 
 By default, `reindex` will use `all` scope for find, you can change overwriting the scope
@@ -82,7 +82,7 @@ irb(main):004:0> User.reindex(recreate: true)
 
 this will drop the **Index** with all the **Documents** and start to reindexing.
 
-###Custom Attributes
+### Custom Attributes
 You can use Custom attributes defining a method or attr_accessor.
 
 ```ruby
@@ -129,7 +129,7 @@ end
 ```
 
 
-##Search
+## Search
 
 Simply use the `redisearch` method with a [RediSearch Query Syntax](https://oss.redislabs.com/redisearch/Query_Syntax.html).
 
