@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3'
   s.license     = 'MIT'
 
-  s.add_dependency 'activerecord', '>= 4.2'
-  s.add_dependency 'activesupport', '>= 4.2'
+  s.add_dependency 'activerecord', '~> 4.2'
+  s.add_dependency 'activesupport', '~> 4.2'
 
-  s.add_dependency "redi_searcher", '>= 0.1.1'
+  s.add_dependency "redi_searcher", '~> 0.1', '>= 0.1.1'
 
   s.files         = `git ls-files`.split("\n").reject { |f| f.match(%r{^(spec/)}) }
 
