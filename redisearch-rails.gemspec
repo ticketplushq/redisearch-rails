@@ -1,25 +1,34 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "redisearch-rails/version"
 
-Gem::Specification.new do |s|
-  s.name        = "redisearch-rails"
-  s.version     = RediSearch::VERSION
-  s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Patricio Beckmann"]
-  s.email       = ["pato.beckmann@gmail.com"]
-  s.homepage    = "https://github.com/Ticketplus/redisearch-rails"
-  s.summary     = %q{RediSearch on Rails}
-  s.description = %q{'Index and search Rails models on redisearch'}
-  s.required_ruby_version = '>= 2.3'
-  s.license     = 'MIT'
+Gem::Specification.new do |spec|
+  spec.name          = "redisearch-rails"
+  spec.version       = RediSearch::VERSION
+  spec.authors       = ["Patricio Beckmann"]
+  spec.email         = ["pato.beckmann@gmail.com"]
 
-  s.add_dependency 'activerecord', '~> 4.2'
-  s.add_dependency 'activesupport', '~> 4.2'
+  spec.summary       = %q{RediSearch on Rails}
+  spec.description   = %q{'Index and search Rails models on redisearch'}
+  spec.homepage      = "https://github.com/Ticketplus/redisearch-rails"
+  spec.required_ruby_version = '>= 2.3'
+  spec.license       = "MIT"
 
-  s.add_dependency "redi_searcher", '~> 0.1', '>= 0.1.1'
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  end
+  spec.bindir        = "exe"
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
 
-  s.files         = `git ls-files`.split("\n").reject { |f| f.match(%r{^(spec/)}) }
+  spec.add_dependency 'activerecord', '~> 4.2'
+  spec.add_dependency 'activesupport', '~> 4.2'
+  spec.add_dependency 'redi_searcher', '~> 0.1', '>= 0.1.3'
 
-  s.require_paths = ["lib"]
+  spec.add_development_dependency "bundler", "~> 1.17"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
 end

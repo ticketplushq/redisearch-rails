@@ -2,6 +2,8 @@ require 'redisearch-rails/configuration'
 
 require "active_support/lazy_load_hooks"
 
+require 'redi_searcher'
+
 module RediSearch
   autoload :RediSearchable, 'redisearch-rails/redisearchable'
 
@@ -23,6 +25,6 @@ module RediSearch
   end
 end
 
-ActiveSupport.on_load(:active_record) do  
+ActiveSupport.on_load(:active_record) do
   include RediSearch::RediSearchable
 end

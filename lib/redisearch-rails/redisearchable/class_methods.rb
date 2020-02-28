@@ -26,6 +26,10 @@ module RediSearch
         self.find(result)
       end
 
+      def redisearch_count
+        redisearch_index.search('*').shift
+      end
+
       # Reindex all
       def reindex(recreate: false, only: [], **options)
         index = redisearch_index
@@ -40,6 +44,7 @@ module RediSearch
             end
           end
         end
+        true
       end
     end
   end
