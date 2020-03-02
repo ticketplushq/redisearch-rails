@@ -64,8 +64,8 @@ describe RediSearch do
       expect(user.respond_to?(:redisearch_document)).to be true
     end
 
-    it "document has the id of the model" do
-      expect(user.redisearch_document.doc_id).to eq "0#{user.id}"
+    it "document has the id of the model prefixed by index name" do
+      expect(user.redisearch_document.doc_id).to eq "#{User.redisearch_index.name}_#{user.id}"
     end
   end
 end

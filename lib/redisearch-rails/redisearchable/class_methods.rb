@@ -2,10 +2,11 @@ module RediSearch
   module RediSearchable
     module ClassMethods
 
-      attr_reader :redisearch_index
+      attr_reader :redisearch_index, :redisearch_index_serializer
 
       def redisearch(*args, schema:, **options)
         prefix = options[:prefix]
+        @redisearch_index_serializer = options[:index_serializer]
 
         index_name = [prefix, model_name.plural].compact.join("_")
         @redisearch_index = RediSearch.client.generate_index(index_name, schema)
@@ -23,6 +24,7 @@ module RediSearch
       def redisearch(query, **options)
         result = redisearch_index.search(query, options.deep_merge(nocontent: true))
         result.shift # remove the first element (count)
+        result.map! { |elem| elem.sub("#{redisearch_index.name}_", '')}
         self.find(result)
       end
 

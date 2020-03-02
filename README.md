@@ -128,6 +128,39 @@ class User < ActiveRecord::Base
 end
 ```
 
+You can add a Serializer to the indexer like this
+
+```ruby
+# == Schema Information
+#
+# Table name: company
+#  name             :string(255)
+#
+class Company < ActiveRecord::Base
+  redisearch schema: {
+    name: { :text },
+    users_ids: :tag # Array
+  }, index_serializer: Company::RedisearchSerlializer
+  has_many :users
+
+  scope :redisearch_import, -> { includes(:users) }
+end
+
+class Company::RedisearchSerlializer
+  attr_reader :company
+
+  def initialize(company)
+    @company = company
+  end
+
+  def users_ids
+    company.users.ids #Array of ids
+  end
+end
+```
+
+
+
 
 ## Search
 

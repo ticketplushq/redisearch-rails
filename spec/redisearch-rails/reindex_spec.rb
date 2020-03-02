@@ -7,11 +7,21 @@ describe RediSearch do
         redisearch schema: {
           first_name: :text
         }
+        belongs_to :company
       end
 
-      User.create!
-      User.create!
+      rebuild_model 'Company' do
+        redisearch schema: {
+          name: :text
+        }
+        has_many :users
+      end
+      company = Company.create(name: 'The Company')
+      company.users.create(first_name: 'Jon', last_name: 'Doe')
+      company.users.create(first_name: 'Jane', last_name: 'Doe')
+
       User.reindex
+      Company.reindex
     end
 
     it "index all elements to rediseach service" do
