@@ -9,9 +9,11 @@ rvm:
   - 2.5.7
   - 2.4.9
 
+env:
+  - BV=1.17.2
 
 before_install:
-  - gem install bundler -v 1.17.2
+  - gem install bundler -v $BV
   - docker run -d -p 127.0.0.1:6379:6379 redislabs/redisearch:latest
   - docker ps -a
 
@@ -19,6 +21,8 @@ jobs:
   include:
     # Ruby-head (we want to know how we're doing, but not fail the build)
     - rvm: ruby-head
+    - env: BV=2.1.4
 
   allow_failures:
     - rvm: ruby-head
+    - env: BV=2.1.4
