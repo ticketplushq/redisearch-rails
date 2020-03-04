@@ -21,8 +21,8 @@ jobs:
   include:
     # Ruby-head (we want to know how we're doing, but not fail the build)
     - rvm: ruby-head
-    - env: BV=2.1.4
+      env: BV=2.1.4
 
   allow_failures:
     - rvm: ruby-head
-    - env: BV=2.1.4
+      env: BV=2.1.4
