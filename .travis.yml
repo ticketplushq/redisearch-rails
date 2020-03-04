@@ -1,7 +1,24 @@
 ---
-sudo: false
+os: linux
+
 language: ruby
 cache: bundler
+
 rvm:
-  - 2.6.1
-before_install: gem install bundler -v 1.17.2
+  - 2.6.5
+  - 2.5.7
+  - 2.4.9
+
+
+before_install:
+  - gem install bundler -v 1.17.2
+  - docker run -d -p 127.0.0.1:6379:6379 redislabs/redisearch:latest
+  - docker ps -a
+
+jobs:
+  include:
+    # Ruby-head (we want to know how we're doing, but not fail the build)
+    - rvm: ruby-head
+
+  allow_failures:
+    - rvm: ruby-head
