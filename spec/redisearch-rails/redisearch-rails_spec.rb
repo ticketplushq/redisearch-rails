@@ -8,4 +8,8 @@ RSpec.describe RediSearch do
   it "has a client connection to Redis" do
     expect(RediSearch.client).not_to be nil
   end
+
+  it "respond to configuration methods" do
+    expect(RediSearch.queue_name).to be :redisearch
+  end
 end
