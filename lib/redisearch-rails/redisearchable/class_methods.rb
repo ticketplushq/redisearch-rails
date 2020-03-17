@@ -2,21 +2,48 @@ module RediSearch
   module RediSearchable
     module ClassMethods
 
-      attr_reader :redisearch_index, :redisearch_index_serializer
-
       def redisearch(*args, schema:, **options)
-        prefix = options[:prefix]
-        @redisearch_index_serializer = options[:index_serializer]
+        options = RediSearch.model_options.merge(options)
 
-        index_name = [prefix, model_name.plural].compact.join("_")
+        raise "Only call redisearch once per model" if respond_to?(:redisearch_index)
+
+        prefix = options[:prefix] || RediSearch.index_prefix
+        prefix = prefix.call if prefix.respond_to?(:call)
+
+        suffix = options[:suffix] || RediSearch.index_suffix
+        suffix = suffix.call if suffix.respond_to?(:call)
+
+        callbacks = options.key?(:callbacks) ? options[:callbacks] : :inline
+        unless [:inline, true, false, :async].include?(callbacks)
+          raise ArgumentError, "#{callbacks} its not permited value for callbacks"
+        end
+
+        class << self
+          attr_reader :redisearch_index, :redisearch_index_serializer, :redisearch_index_options
+        end
+
+        index_name = [prefix, model_name.plural, suffix].compact.join("_")
+        @redisearch_index_serializer = options[:index_serializer]
         @redisearch_index = RediSearch.client.generate_index(index_name, schema)
 
+        RediSearch.models << self
+
+        @redisearch_index_options = options
+
         scope :redisearch_import, -> { all }
+
+        # always add callbacks, even when callbacks is false
+        # so Model.callbacks block can be used
+        if respond_to?(:after_commit)
+          after_commit :reindex, if: -> { RediSearch.callbacks?(default: callbacks) }
+        elsif respond_to?(:after_save)
+          after_save :reindex, if: -> { RediSearch.callbacks?(default: callbacks) }
+          after_destroy :reindex, if: -> { RediSearch.callbacks?(default: callbacks) }
+        end
 
         include InstanceMethods
         extend RediSearchClassMethods
       end
-
     end
 
     module RediSearchClassMethods
@@ -33,21 +60,15 @@ module RediSearch
       end
 
       # Reindex all
-      def reindex(recreate: false, only: [], **options)
+      def reindex(recreate: false, mode: :inline, **options)
         index = redisearch_index
 
         index.drop if recreate
         index.create unless index.exists?
 
-        redisearch_import.find_in_batches do |elements|
-          redisearch_index.client.multi do
-            elements.each do |element|
-              element.redisearch_document.add(options.deep_merge(replace: true, partial: true))
-            end
-          end
-        end
-        true
+        RediSearch::BatchesIndexer.new(self).reindex(mode: mode)
       end
+
     end
   end
 end

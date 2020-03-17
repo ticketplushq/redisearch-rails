@@ -16,12 +16,14 @@ describe RediSearch do
         }
         has_many :users
       end
-      company = Company.create(name: 'The Company')
-      company.users.create(first_name: 'Jon', last_name: 'Doe')
-      company.users.create(first_name: 'Jane', last_name: 'Doe')
+      RediSearch.callbacks(false) do
+        company = Company.create(name: 'The Company')
+        company.users.create(first_name: 'Jon', last_name: 'Doe')
+        company.users.create(first_name: 'Jane', last_name: 'Doe')
 
-      User.reindex
-      Company.reindex
+        User.reindex
+        Company.reindex
+      end
     end
 
     it "index all elements to rediseach service" do
@@ -35,6 +37,18 @@ describe RediSearch do
       end
 
       it "drop and reindex elements in rediseach service" do
+        expect(User.redisearch_count).to eq 1
+      end
+    end
+
+    context "delete records not persisted" do
+      before do
+        RediSearch.callbacks(true) do
+          User.last.destroy
+        end
+      end
+
+      it "drop deleted elements in rediseach service" do
         expect(User.redisearch_count).to eq 1
       end
     end

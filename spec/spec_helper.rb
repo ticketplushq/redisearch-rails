@@ -6,6 +6,7 @@ require 'pry'
 
 require 'active_record'
 require 'active_record/version'
+require 'active_job'
 require 'active_support'
 require 'active_support/core_ext'
 
@@ -15,6 +16,8 @@ ROOT = Pathname(File.expand_path(File.join(File.dirname(__FILE__), '..')))
 ActiveSupport::Deprecation.silenced = true
 
 Dir[File.join(ROOT, 'spec', 'support', '**', '*.rb')].each{|f| require f }
+
+ActiveJob::Base.queue_adapter = :test
 
 
 RSpec.configure do |config|
@@ -30,6 +33,12 @@ RSpec.configure do |config|
 
   config.include ModelReconstruction
 
+  config.include ActiveJob::TestHelper
+  config.after(:each, type: :job) do
+    clear_enqueued_jobs
+    clear_performed_jobs
+  end
+
   config.before(:all) do
     rebuild_model 'User'
     Redis.new.flushall
@@ -37,5 +46,6 @@ RSpec.configure do |config|
 
   config.after do
     Redis.new.flushall
+    RediSearch.models = []
   end
 end

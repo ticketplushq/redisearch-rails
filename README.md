@@ -1,5 +1,5 @@
 # Redisearch-rails
-[![Build Status](https://travis-ci.org/Ticketplus/redisearch-rails.svg?branch=master)](https://travis-ci.org/Ticketplus/redisearch-rails)
+[![Build Status](https://travis-ci.org/eventBrain/redisearch-rails.svg?branch=master)](https://travis-ci.org/eventBrain/redisearch-rails)
 
 Adds support for easily indexing and search ActiveRecord models using RediSearch module http://redisearch.io/
 
