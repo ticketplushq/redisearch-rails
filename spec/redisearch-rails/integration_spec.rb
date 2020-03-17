@@ -7,6 +7,12 @@ describe RediSearch do
         first_name: :text
       }
     end
+
+    rebuild_model 'Company' do
+      redisearch schema: {
+        name: :text
+      }
+    end
   end
 
   context "When ActiveRecord class has redisearch called on class" do
@@ -23,6 +29,10 @@ describe RediSearch do
 
       it "the index name its the same of the model plural name" do
         expect(User.redisearch_index.name).to eq User.model_name.plural
+      end
+
+      it "the Redisearch models have all the models name with redisearch" do
+        expect(RediSearch.models).to include(User, Company)
       end
     end
 
@@ -58,6 +68,9 @@ describe RediSearch do
   end
 
   context "Instance Object with redisearch" do
+    before do
+      User.reindex(recreate: true)
+    end
     let(:user) { User.create(first_name: 'name') }
 
     it "defines redisearch_document" do
@@ -66,6 +79,27 @@ describe RediSearch do
 
     it "document has the id of the model prefixed by index name" do
       expect(user.redisearch_document.doc_id).to eq "#{User.redisearch_index.name}_#{user.id}"
+    end
+
+    it "index with default callbacks on create" do
+      expect(user.class.redisearch_count).to eq 1
+    end
+
+    context "with callbacks async" do
+      before do
+        rebuild_model 'User' do
+          redisearch schema: {
+            first_name: :text
+          }, callbacks: :async
+        end
+        User.reindex(recreate: true)
+      end
+
+      it "enqueue the job" do
+        user
+        expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq 1
+      end
+
     end
   end
 end
