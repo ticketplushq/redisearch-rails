@@ -5,6 +5,10 @@ module RediSearch
     def perform(klass, start, finish, batch_size)
       klass = klass.constantize
 
+      start = start.to_i
+      finish = finish.to_i
+      batch_size = batch_size.to_i
+      
       batches_relation = nil
 
       if ActiveRecord::VERSION::STRING >= "5.0"
