@@ -21,6 +21,10 @@ describe RediSearch do
       it 'query by field bring the element' do
         expect(User.redisearch('@first_name:"Jon"')).to eq User.where(first_name: "Jon")
       end
+
+      it "query with load false brings the ids" do
+        expect(User.redisearch('*', load: false)).to eq User.all.order("id DESC").ids.map(&:to_s)
+      end
     end
 
     context "with custom attribute" do

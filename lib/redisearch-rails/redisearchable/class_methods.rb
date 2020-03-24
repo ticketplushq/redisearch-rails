@@ -48,10 +48,11 @@ module RediSearch
 
     module RediSearchClassMethods
 
-      def redisearch(query, **options)
+      def redisearch(query, load: true, **options)
         result = redisearch_index.search(query, options.deep_merge(nocontent: true))
         result.shift # remove the first element (count)
         result.map! { |elem| elem.sub("#{redisearch_index.name}_", '')}
+        return result unless load
         self.find(result)
       end
 
