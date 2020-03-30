@@ -56,8 +56,8 @@ module RediSearch
         self.find(result)
       end
 
-      def redisearch_count
-        redisearch_index.search('*').shift
+      def redisearch_count(query = '*')
+        redisearch_index.search(query, limit: [0, 0]).shift
       end
 
       # Reindex all
