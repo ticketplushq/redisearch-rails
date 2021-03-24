@@ -14,7 +14,7 @@ env:
 
 before_install:
   - gem install bundler -v $BV
-  - docker run -d -p 127.0.0.1:6379:6379 redislabs/redisearch:latest
+  - docker run -d -p 127.0.0.1:6379:6379 redislabs/redisearch:1.8.3
   - docker ps -a
 
 jobs:
