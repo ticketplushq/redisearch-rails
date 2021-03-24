@@ -11,7 +11,6 @@ describe RediSearch do
         end
         User.create(first_name: 'Jon')
         User.create(first_name: 'Jane')
-        User.reindex
       end
 
       it "query '*' brings all the records" do
@@ -40,7 +39,6 @@ describe RediSearch do
         end
         User.create(first_name: 'Jon', last_name: 'Doe')
         User.create(first_name: 'Jane', last_name: 'Doe')
-        User.reindex
       end
 
       it 'query by custom field bring the element' do
@@ -63,7 +61,6 @@ describe RediSearch do
 
         User.create(first_name: 'Jane', last_name: 'Doe', age: 23)
         User.create(first_name: 'Jon El', last_name: 'Doe', age: 21)
-        User.reindex
       end
 
       it "query by tag brings the element" do
