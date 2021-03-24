@@ -14,7 +14,7 @@ describe RediSearch do
       end
 
       it "query '*' brings all the records" do
-        expect(User.redisearch('*')).to eq User.all
+        expect(User.redisearch('*')).to contain_exactly(*User.all)
       end
 
       it 'query by field bring the element' do
@@ -67,7 +67,7 @@ describe RediSearch do
         expect(User.redisearch('@values:{21}')).to eq User.where(first_name: 'Jon El', last_name: 'Doe')
         expect(User.redisearch('@values:{Jon El}')).to eq User.where(first_name: 'Jon El', last_name: 'Doe')
         expect(User.redisearch('@values:{23}')).to eq User.where(first_name: 'Jane', last_name: 'Doe')
-        expect(User.redisearch('@values:{ Jon El | 23 }')).to eq User.all
+        expect(User.redisearch('@values:{ Jon El | 23 }')).to contain_exactly(*User.all)
       end
     end
   end
