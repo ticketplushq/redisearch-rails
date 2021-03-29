@@ -18,7 +18,8 @@ module ModelReconstruction
   end
 
   def rebuild_model model_name, &block
-    rebuild_class model_name, &block
+    rebuilt_class = rebuild_class(model_name, &block)
+    rebuilt_class.try(:reindex)
   end
 
   def rebuild_class name, &block
@@ -26,5 +27,4 @@ module ModelReconstruction
       klass.class_eval(&block) if block_given?
     end
   end
-
 end

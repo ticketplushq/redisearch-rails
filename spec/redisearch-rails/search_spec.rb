@@ -11,11 +11,10 @@ describe RediSearch do
         end
         User.create(first_name: 'Jon')
         User.create(first_name: 'Jane')
-        User.reindex
       end
 
       it "query '*' brings all the records" do
-        expect(User.redisearch('*')).to eq User.all
+        expect(User.redisearch('*')).to contain_exactly(*User.all)
       end
 
       it 'query by field bring the element' do
@@ -40,7 +39,6 @@ describe RediSearch do
         end
         User.create(first_name: 'Jon', last_name: 'Doe')
         User.create(first_name: 'Jane', last_name: 'Doe')
-        User.reindex
       end
 
       it 'query by custom field bring the element' do
@@ -63,14 +61,13 @@ describe RediSearch do
 
         User.create(first_name: 'Jane', last_name: 'Doe', age: 23)
         User.create(first_name: 'Jon El', last_name: 'Doe', age: 21)
-        User.reindex
       end
 
       it "query by tag brings the element" do
         expect(User.redisearch('@values:{21}')).to eq User.where(first_name: 'Jon El', last_name: 'Doe')
         expect(User.redisearch('@values:{Jon El}')).to eq User.where(first_name: 'Jon El', last_name: 'Doe')
         expect(User.redisearch('@values:{23}')).to eq User.where(first_name: 'Jane', last_name: 'Doe')
-        expect(User.redisearch('@values:{ Jon El | 23 }')).to eq User.all
+        expect(User.redisearch('@values:{ Jon El | 23 }')).to contain_exactly(*User.all)
       end
     end
   end
