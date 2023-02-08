@@ -32,6 +32,12 @@ module RediSearch
       else
         record.redisearch_add
       end
+    rescue Redis::CommandError => e
+      if e.message == 'Unknown index name'
+        @index.create unless @index.exists?
+      end
+
+      raise e
     end
   end
 end
